@@ -38,13 +38,24 @@ class DetailProductViewController: UIViewController {
     
    private lazy var labelName : UILabel = {
         let label = UILabel()
-       label.text = data?.title
+        label.text = data?.title
+        label.font = UIFont(name: "Arial Rounded MT Bold", size: 24)
+        label.textAlignment = .center
+        label.textColor = UIColor(named: "Title")
         return label
     }()
     
     private lazy var labelDescripcion : UILabel = {
         let label = UILabel()
         label.text = data?.description
+        label.numberOfLines = 0
+        return label
+    }()
+    
+    private lazy var labelPrecio : UILabel = {
+        let label = UILabel()
+        guard let precio = data?.price else {return label}
+        label.text = "Precio:  $\(precio)"
         label.numberOfLines = 0
         return label
     }()
@@ -59,14 +70,20 @@ class DetailProductViewController: UIViewController {
     
     //MARK: - Methods
     private func setupUI(){
-        view.addSubview(imageView)
-        imageView.addAnchorsAndCenter(centerX: true, centerY: false, width: 200, height: 200, left: nil, top: 100, right: nil, bottom: nil)
         view.addSubview(labelName)
-        labelName.addAnchorsAndCenter(centerX: true, centerY: false, width: nil, height: nil, left: nil, top: 24, right: nil, bottom: nil,withAnchor: .top,relativeToView: imageView)
+        labelName.addAnchorsAndCenter(centerX: true, centerY: false, width: nil, height: nil, left: nil, top: 100, right: nil, bottom: nil)
+        
+        view.addSubview(imageView)
+        imageView.addAnchorsAndCenter(centerX: true, centerY: false, width: nil, height: 200, left: 16, top: 24, right: 16, bottom: nil, withAnchor: .top, relativeToView: labelName)
+       
         view.addSubview(labelDescripcion)
-        labelDescripcion.addAnchorsAndSize(width: nil, height: nil, left: 20, top: 20, right: 20, bottom: nil,withAnchor: .top, relativeToView: labelName)
+        labelDescripcion.addAnchorsAndSize(width: nil, height: nil, left: 24, top: 16, right: 24, bottom: nil,withAnchor: .top, relativeToView: imageView)
+        
+        view.addSubview(labelPrecio)
+        labelPrecio.addAnchorsAndCenter(centerX: true, centerY: false, width: nil, height: nil, left: nil, top: 24, right: nil, bottom: nil,withAnchor: .top,relativeToView: labelDescripcion)
+        
         view.addSubview(button)
-        button.addAnchorsAndSize(width: nil, height: 50, left: 30, top: 100, right: 50, bottom: nil, withAnchor: .top, relativeToView: labelDescripcion)
+        button.addAnchorsAndSize(width: nil, height: 50, left: 30, top: 32, right: 50, bottom: nil, withAnchor: .top, relativeToView: labelPrecio)
         
         if let urlString = data?.thumbnail as? String {
             if let imagenURL = URL(string: urlString) {
@@ -86,11 +103,8 @@ class DetailProductViewController: UIViewController {
 //MARK: - View Methods
 extension DetailProductViewController: DetailProductViewProtocol {
     @objc func regresar(){
-        print("regresar")
         self.navigationController?.popViewController(animated: true)
     }
-
-    
 }
 
 //MARK: - Private functions

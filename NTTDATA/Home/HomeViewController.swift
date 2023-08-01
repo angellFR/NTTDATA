@@ -20,6 +20,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         let tableView = UITableView()
         tableView.register(TableViewCell.self, forCellReuseIdentifier: "TableViewCell")
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        
         return tableView
     }()
     
@@ -41,7 +42,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     //MARK: - Life Cycle
 	override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .red
+        view.backgroundColor = .white
         setupUI()
         presenter?.getInitData()
     }
@@ -51,14 +52,15 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 func setupUI(){
     tableView.dataSource = self
     tableView.delegate = self
+    view.addSubview(stackViewTitle)
     view.addSubview(tableView)
     NSLayoutConstraint.activate([
         tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-        tableView.topAnchor.constraint(equalTo: view.topAnchor),
+        tableView.topAnchor.constraint(equalTo: stackViewTitle.bottomAnchor,constant: 5),
         tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-        tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
     ])
-    view.addSubview(stackViewTitle)
+  
     stackViewTitle.addAnchorsAndSize(width: width, height: 24, left: nil, top: 70, right: nil, bottom: nil)
     stackViewTitle.addArrangedSubview(labelTitle)
     labelTitle.addAnchorsAndCenter(centerX: true, centerY: true, width: nil, height: nil, left: nil, top: nil, right: nil, bottom: nil)
@@ -90,12 +92,14 @@ extension HomeViewController {
         cell.labelName.text = "Nombre: \(name)"
         cell.labelDescripcion.text = dataSource?.products[indexPath.row].description
         cell.labelPrecio.text = "Prrecio: $\(precio)"
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let detalle = dataSource?.products[indexPath.row] else { return }
         presenter?.nextView(info: detalle)
+        tableView.deselectRow(at: indexPath, animated: true)
 
     }
     
